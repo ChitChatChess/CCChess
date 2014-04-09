@@ -10,16 +10,32 @@ import environment.Environment;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.Point;
+import grid.Grid;
+import image.ResourceTools;
+import java.awt.Color;
+
 
 /**
  *
  * @author Owner
  */
 class ChessBoard extends Environment {
+    
+    StandardBoard Board;
 
     @Override
     public void initializeEnvironment() {
         
+        this.setBackground(ResourceTools.loadImageFromResource("chessres/Chess Wood.sjpg"));
+        
+        Board = new StandardBoard();
+        Board.setCellHeight(100);
+        Board.setCellWidth(100);
+        Board.setColumns(8);
+        Board.setRows(8);
+        Board.setPosition(new Point(80, 80));
+        Board.setColor(new Color(0,0,0,0));
     }
 
     @Override
@@ -44,7 +60,9 @@ class ChessBoard extends Environment {
 
     @Override
     public void paintEnvironment(Graphics graphics) {
-
+        if (Board != null) {
+            Board.paintComponent(graphics);
+        }
     }
 
     

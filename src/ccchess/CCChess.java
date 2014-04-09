@@ -7,6 +7,7 @@
 package ccchess;
 
 import environment.ApplicationStarter;
+import java.awt.Dimension;
 
 /**
  *
@@ -22,7 +23,7 @@ public class CCChess {
     }
 
     private static void start() {
-        ApplicationStarter.run("CCChess", new ChessBoard());
+        ApplicationStarter.run(new String[0], "CCChess", new Dimension(980,1000), new ChessBoard());
     }
     
 }
