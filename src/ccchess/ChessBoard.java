@@ -27,7 +27,7 @@ class ChessBoard extends Environment {
     @Override
     public void initializeEnvironment() {
         
-        this.setBackground(ResourceTools.loadImageFromResource("chessres/Chess Wood.sjpg"));
+        this.setBackground(ResourceTools.loadImageFromResource("chessres/chess_wood.jpg"));
         
         Board = new StandardBoard();
         Board.setCellHeight(100);
