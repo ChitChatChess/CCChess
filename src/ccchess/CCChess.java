@@ -20,6 +20,7 @@ public class CCChess {
      */
     public static void main(String[] args) {
         start();
+        
     }
 
     private static void start() {
