@@ -24,7 +24,7 @@ public class CCChess {
     }
 
     private static void start() {
-        ApplicationStarter.run(new String[0], "CCChess", new Dimension(980, 1000), new ChessBoard());
+        ApplicationStarter.run(new String[0], "CCChess", new Dimension(780, 800), new ChessBoard());
     }
     
 }

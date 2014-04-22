@@ -30,8 +30,8 @@ class ChessBoard extends Environment {
         this.setBackground(ResourceTools.loadImageFromResource("chessres/chess_wood.jpg"));
         
         Board = new StandardBoard();
-        Board.setCellHeight(100);
-        Board.setCellWidth(100);
+        Board.setCellHeight(75);
+        Board.setCellWidth(75);
         Board.setColumns(8);
         Board.setRows(8);
         Board.setPosition(new Point(80, 80));
