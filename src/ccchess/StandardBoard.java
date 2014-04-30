@@ -8,12 +8,13 @@ package ccchess;
 import grid.Grid;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 
 /**
  *
  * @author Owner
  */
-public class StandardBoard extends Grid {
+public class StandardBoard extends Grid implements StandardFormLocationCoordinateTranslatorIntf {
 
     private Color light = Color.WHITE;
     private Color dark = new Color(205,133,63);
@@ -33,5 +34,11 @@ public class StandardBoard extends Grid {
             }
         }
     }
-
+    
+//<editor-fold defaultstate="collapsed" desc="StandardFormLocationCoordinateTranslatorIntf Methods">
+    @Override
+    public Point getScreenLocationFromStandardFormLocation(StandardFormLocation sfloc) {
+        return this.getCellSystemCoordinate(sfloc.getGridLocation());
+    }
+//</editor-fold>
 }

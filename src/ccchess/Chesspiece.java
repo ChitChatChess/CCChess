@@ -17,22 +17,23 @@ import java.awt.Point;
  * @author Owner
  */
 public class Chesspiece extends Actor {
+    private StandardFormLocationCoordinateTranslatorIntf locationTranslator;
 
-//    public static void chesspieceFactory(ChesspieceColor color, ChesspieceType type){
-//        return Chesspiece(new Point(0, 0), new Velocity(0, 0), color, type);
-//    }
     
-    
-    public Chesspiece(Point position, Velocity velocity, ChesspieceColor color, ChesspieceType type) {
-        super(position, velocity);
+//    public Chesspiece(Point position, Velocity velocity, ChesspieceColor color, ChesspieceType type) {
+    public Chesspiece(Character column, int row, ChesspieceColor color, ChesspieceType type, StandardFormLocationCoordinateTranslatorIntf locationTranslator) {
+        super(new Point(0, 0), new Velocity(0, 0));
         this.color = color;
         this.type = type;
-//        this.setImage(????);
+        this.locationTranslator = locationTranslator;
+        this.setImage(ChesspieceImageFactory.getImage(color, type));
+        this.setStandardFormLocation(column, row);
     }
     
 //<editor-fold defaultstate="collapsed" desc="Properties">
     private ChesspieceColor color;
     private ChesspieceType type;
+    private StandardFormLocation standardFormLocation = new StandardFormLocation('a', 1);
     
     /**
      * @return the color
@@ -62,5 +63,35 @@ public class Chesspiece extends Actor {
         this.type = type;
     }
 //</editor-fold>
+
+    /**
+     * @return the standardFormLocation
+     */
+    public StandardFormLocation getStandardFormLocation() {
+        return standardFormLocation;
+    }
+
+    /**
+     * @param standardFormLocation the standardFormLocation to set
+     */
+    public void setStandardFormLocation(StandardFormLocation standardFormLocation) {
+        this.standardFormLocation = standardFormLocation;
+    }
+
+    /**
+     * @param standardFormLocation the standardFormLocation to set
+     */
+    public void setStandardFormLocation(Character column, int row) {
+        this.standardFormLocation.setColumn(column);
+        this.standardFormLocation.setRow(row);
+        
+        updatePosition();
+    }
+
+    private void updatePosition() {
+        if (this.locationTranslator != null) {
+            this.setPosition(locationTranslator.getScreenLocationFromStandardFormLocation(standardFormLocation));
+        }
+    }
     
 }
