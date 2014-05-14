@@ -18,50 +18,33 @@ import java.awt.Point;
  */
 public class Chesspiece extends Actor {
 
-    private StandardFormLocationCoordinateTranslatorIntf locationTranslator;
-    private boolean selected = false;
-
     @Override
     public void paint(Graphics graphics) {
         super.paint(graphics);
         if (selected) {
             graphics.setColor(Color.red);
-//            graphics.drawRect(getPosition().x, getPosition().y, this.getImageSize().width, this.getImageSize().height);
             graphics.drawRect(getPosition().x - 5, getPosition().y - 5, this.getObjectBoundary().width + 10, this.getObjectBoundary().height + 10);
         }
     }
 
-//    public Chesspiece(Point position, Velocity velocity, ChesspieceColor color, ChesspieceType type) {
-    public Chesspiece(Character column, int row, ChesspieceColor color, ChesspieceType type,
+    public Chesspiece(Character column, int row, Side side, ChesspieceType type,
             StandardFormLocationCoordinateTranslatorIntf locationTranslator, CellSizeProviderIntf cellSizeProvider) {
         super(new Point(0, 0), new Velocity(0, 0));
         this.cellSizeProvider = cellSizeProvider;
-        this.color = color;
+        this.side = side;
         this.type = type;
         this.locationTranslator = locationTranslator;
-        this.setImage(ChesspieceImageFactory.getImage(color, type));
+        this.setImage(ChesspieceImageFactory.getImage(side, type));
         this.setStandardFormLocation(column, row);
     }
 
 //<editor-fold defaultstate="collapsed" desc="Properties">
-    private ChesspieceColor color;
+    private final StandardFormLocationCoordinateTranslatorIntf locationTranslator;
+    private boolean selected = false;
+    private Side side  = Side.WHITE;
     private ChesspieceType type;
     private StandardFormLocation standardFormLocation = new StandardFormLocation('a', 1);
     private CellSizeProviderIntf cellSizeProvider;
-
-    /**
-     * @return the color
-     */
-    public ChesspieceColor getColor() {
-        return color;
-    }
-
-    /**
-     * @param color the color to set
-     */
-    public void setColor(ChesspieceColor color) {
-        this.color = color;
-    }
 
     /**
      * @return the type
@@ -76,7 +59,6 @@ public class Chesspiece extends Actor {
     public void setType(ChesspieceType type) {
         this.type = type;
     }
-//</editor-fold>
 
     /**
      * @return the standardFormLocation
@@ -129,4 +111,18 @@ public class Chesspiece extends Actor {
         this.selected = selected;
     }
 
+    /**
+     * @return the side
+     */
+    public Side getSide() {
+        return side;
+    }
+
+    /**
+     * @param side the side to set
+     */
+    public void setSide(Side side) {
+        this.side = side;
+    }
+//</editor-fold>
 }

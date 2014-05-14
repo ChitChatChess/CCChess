@@ -16,7 +16,6 @@ import java.awt.Point;
  * @author Owner
  */
 public class StandardBoard extends Grid implements StandardFormLocationCoordinateTranslatorIntf, CellSizeProviderIntf {
-
     private Color light = Color.WHITE;
     private Color dark = new Color(205,133,63);
 
@@ -35,7 +34,7 @@ public class StandardBoard extends Grid implements StandardFormLocationCoordinat
             }
         }
     }
-    
+        
 //<editor-fold defaultstate="collapsed" desc="StandardFormLocationCoordinateTranslatorIntf Methods">
     @Override
     public Point getScreenLocationFromStandardFormLocation(StandardFormLocation sfloc) {

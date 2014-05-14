@@ -14,11 +14,11 @@ import java.awt.image.BufferedImage;
  */
 public class ChesspieceImageFactory {
 
-    public static BufferedImage getImage(ChesspieceColor color, ChesspieceType type) {
+    public static BufferedImage getImage(Side side, ChesspieceType type) {
         BufferedImage chessmen = (BufferedImage) ResourceTools.loadImageFromResource("chessres/Chessmen.png");
 
 //        White
-        if (color == ChesspieceColor.WHITE) {
+        if (side == Side.WHITE) {
             if (type == ChesspieceType.KING) {
                 return chessmen.getSubimage(17, 15, 38, 38);
             } else if (type == ChesspieceType.QUEEN) {
@@ -35,7 +35,7 @@ public class ChesspieceImageFactory {
         }
         
 //        Black
-        if (color == ChesspieceColor.BLACK) {
+        if (side == Side.BLACK) {
             if (type == ChesspieceType.KING) {
                 return chessmen.getSubimage(17, 75, 37, 37);
             } else if (type == ChesspieceType.QUEEN) {
