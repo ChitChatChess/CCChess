@@ -23,16 +23,16 @@ import java.util.ArrayList;
  * @author Owner
  */
 class ChessBoard extends Environment {
-    
+
     StandardBoard board;
     private ArrayList<Chesspiece> chesspieces;
     BufferedImage image, w_king, w_queen, w_bishop, w_knight, w_rook, w_pawn, b_king, b_queen, b_bishop, b_knight, b_rook, b_pawn;
-    
+
     @Override
     public void initializeEnvironment() {
-        
+
         this.setBackground(ResourceTools.loadImageFromResource("chessres/chess_wood.jpg"));
-        
+
         board = new StandardBoard();
         board.setCellHeight(75);
         board.setCellWidth(75);
@@ -46,7 +46,7 @@ class ChessBoard extends Environment {
 //        test.setSelected(true);
 //        this.getActors().add(test);
         chesspieces = new ArrayList<>();
-        
+
         chesspieces.add(new Chesspiece('e', 1, Side.WHITE, ChesspieceType.KING, board, board));
         chesspieces.add(new Chesspiece('d', 1, Side.WHITE, ChesspieceType.QUEEN, board, board));
         chesspieces.add(new Chesspiece('c', 1, Side.WHITE, ChesspieceType.BISHOP, board, board));
@@ -63,7 +63,7 @@ class ChessBoard extends Environment {
         chesspieces.add(new Chesspiece('f', 2, Side.WHITE, ChesspieceType.PAWN, board, board));
         chesspieces.add(new Chesspiece('g', 2, Side.WHITE, ChesspieceType.PAWN, board, board));
         chesspieces.add(new Chesspiece('h', 2, Side.WHITE, ChesspieceType.PAWN, board, board));
-        
+
         chesspieces.add(new Chesspiece('e', 8, Side.BLACK, ChesspieceType.KING, board, board));
         chesspieces.add(new Chesspiece('d', 8, Side.BLACK, ChesspieceType.QUEEN, board, board));
         chesspieces.add(new Chesspiece('c', 8, Side.BLACK, ChesspieceType.BISHOP, board, board));
@@ -80,9 +80,9 @@ class ChessBoard extends Environment {
         chesspieces.add(new Chesspiece('f', 7, Side.BLACK, ChesspieceType.PAWN, board, board));
         chesspieces.add(new Chesspiece('g', 7, Side.BLACK, ChesspieceType.PAWN, board, board));
         chesspieces.add(new Chesspiece('h', 7, Side.BLACK, ChesspieceType.PAWN, board, board));
-        
+
         this.getActors().addAll(chesspieces);
-        
+
         image = (BufferedImage) ResourceTools.loadImageFromResource("chessres/Chessmen.png");
 
 //        White
@@ -101,24 +101,24 @@ class ChessBoard extends Environment {
         b_rook = ChesspieceImageFactory.getImage(Side.BLACK, ChesspieceType.ROOK);
         b_pawn = ChesspieceImageFactory.getImage(Side.BLACK, ChesspieceType.PAWN);
     }
-    
+
     @Override
     public void timerTaskHandler() {
-        
+
     }
-    
+
     @Override
     public void keyPressedHandler(KeyEvent e) {
 //        if (e.getKeyCode() == KeyEvent.VK_A) {
 //            ( (Chesspiece)this.getActors().get(0)).setStandardFormLocation('e', 4);
 //        }
     }
-    
+
     @Override
     public void keyReleasedHandler(KeyEvent e) {
-        
+
     }
-    
+
     @Override
     public void environmentMouseClicked(MouseEvent e) {
 //        System.out.println(" Mouse position = " + e.getPoint().x + ", " + e.getPoint().y);
@@ -129,24 +129,27 @@ class ChessBoard extends Environment {
             if (chesspiece.contains(e.getPoint())) {
                 //make all chesspieces deselected
                 deselectAllPieces();
-                
+
                 chesspiece.setSelected(true);
                 containsPiece = true;
                 break;
             }
         }
-        
+
         if (!containsPiece) {
             Point cell = this.board.getCellLocationFromSystemCoordinate(e.getPoint());
             System.out.println(cell);
             Chesspiece selectedChesspiece = getSelected();
             if (selectedChesspiece != null) {
-                selectedChesspiece.setStandardFormLocation(StandardFormLocation.getStandardFormLocation(cell.x, cell.y));
+
+                if (isMoveValid(selectedChesspiece, selectedChesspiece.getStandardFormLocation(), StandardFormLocation.getStandardFormLocation(cell.x, cell.y))) {
+                    selectedChesspiece.setStandardFormLocation(StandardFormLocation.getStandardFormLocation(cell.x, cell.y));
+                }
                 deselectAllPieces();
             }
         }
     }
-    
+
     private Chesspiece getSelected() {
         for (Chesspiece chesspiece : chesspieces) {
             if (chesspiece.isSelected()) {
@@ -155,54 +158,62 @@ class ChessBoard extends Environment {
         }
         return null;
     }
-    
+
     private void deselectAllPieces() {
         for (Chesspiece chesspiece : chesspieces) {
             chesspiece.setSelected(false);
         }
     }
-    
+
     public boolean isMoveValid(Chesspiece chesspiece, StandardFormLocation currentSFLoc, StandardFormLocation proposedSFLocn) {
         //if space occupied by piece of same Side, then return false
         for (Chesspiece other : chesspieces) {
             if (other.getStandardFormLocation().equals(proposedSFLocn)) {
                 //if colors match, not allowed
-                
-                //else take piece and move!
+                if (chesspiece.getSide().equals(other.getSide())) {
+//                    System.out.println("Occupied by same colour!");
+                    return false;
+                }
             }
         }
-        
+
+        int xDiff = currentSFLoc.getGridLocation().x - proposedSFLocn.getGridLocation().x;
+        int yDiff = currentSFLoc.getGridLocation().y - proposedSFLocn.getGridLocation().y;
+
         switch (chesspiece.getType()) {
             case PAWN: //stuff
 //                if (chesspiece.getColor() == ) {
 //                    
 //                }
                 break;
-            
-            case ROOK: //stuff
-                
-                break;
-            
-            case KNIGHT: //stuff
-                
-                break;
-            
+
+            case ROOK:
+                //if the path between the proposed location and the original 
+                //location is a straight horizontal or vertical line, then validate move
+                return ((xDiff == 0) || (yDiff == 0));
+
+            case KNIGHT:
+                //if it moves two squares vertically and one square horizontally, or, two squares horizontally and one sqaure vertically, validate move
+                return (((Math.abs(xDiff) == 1) && (Math.abs(yDiff) == 2)) || 
+                        ((Math.abs(xDiff) == 2) && (Math.abs(yDiff) == 1)));
+
             case BISHOP: //stuff
-                
-                break;
-            
+                //if the path between the proposed location and the original 
+                //location is a straight diagonal(45 degrees) line, then validate move
+                return (Math.abs(xDiff) == Math.abs(yDiff));
+
             case KING: //stuff
-                
-                break;
-            
+                //If the proposed position is directly left, right, above, below, 
+                //or diagonal to the original location, then move the piece
+                return ((Math.abs(xDiff) <= 1) && (Math.abs(yDiff) <= 1));
+
             case QUEEN: //stuff
-                
-                break;            
+                return (Math.abs(xDiff) == Math.abs(yDiff)) ||((xDiff == 0) || (yDiff == 0)); 
         }
-        
-        return false;
+
+        return true;
     }
-    
+
     @Override
     public void paintEnvironment(Graphics graphics) {
 //       board
@@ -250,5 +261,5 @@ class ChessBoard extends Environment {
 //            graphics.drawImage(b_pawn, 600, 80, this);
 //        }
     }
-    
+
 }

@@ -137,6 +137,13 @@ public class StandardFormLocation {
     public int getRow() {
         return row;
     }
+    
+    /**
+     * @return true or false, true if the column and row are both equal, false otherwise
+     */
+    public boolean equals(StandardFormLocation sfl){
+        return ((this.column.equals(sfl.column)) && (this.row == sfl.row));
+    }
 
     /**
      * @param row the row to set
