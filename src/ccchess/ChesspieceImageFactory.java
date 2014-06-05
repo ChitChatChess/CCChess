@@ -5,7 +5,7 @@
  */
 package ccchess;
 
-import image.ResourceTools;
+import images.ResourceTools;
 import java.awt.image.BufferedImage;
 
 /**

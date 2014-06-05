@@ -45,6 +45,7 @@ public class Chesspiece extends Actor {
     private ChesspieceType type;
     private StandardFormLocation standardFormLocation = new StandardFormLocation('a', 1);
     private CellSizeProviderIntf cellSizeProvider;
+    private boolean captured = false;
 
     /**
      * @return the type
@@ -125,4 +126,25 @@ public class Chesspiece extends Actor {
         this.side = side;
     }
 //</editor-fold>
+
+    Side Side() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    /**
+     * @return the captured
+     */
+    public boolean isCaptured() {
+        return captured;
+    }
+
+    /**
+     * @param captured the captured to set
+     */
+    public void setCaptured(boolean captured) {
+        this.captured = captured;
+        if (captured) {
+            this.getPosition().y = -5000;
+        }
+    }
 }

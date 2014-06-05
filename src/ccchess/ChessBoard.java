@@ -13,8 +13,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.Point;
 import grid.Grid;
-import image.ResourceTools;
+import images.ResourceTools;
 import java.awt.Color;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -140,10 +141,13 @@ class ChessBoard extends Environment {
             Point cell = this.board.getCellLocationFromSystemCoordinate(e.getPoint());
             System.out.println(cell);
             Chesspiece selectedChesspiece = getSelected();
+
             if (selectedChesspiece != null) {
 
                 if (isMoveValid(selectedChesspiece, selectedChesspiece.getStandardFormLocation(), StandardFormLocation.getStandardFormLocation(cell.x, cell.y))) {
                     selectedChesspiece.setStandardFormLocation(StandardFormLocation.getStandardFormLocation(cell.x, cell.y));
+                } else {
+                    Toolkit.getDefaultToolkit().beep();
                 }
                 deselectAllPieces();
             }
@@ -165,57 +169,198 @@ class ChessBoard extends Environment {
         }
     }
 
-    public boolean isMoveValid(Chesspiece chesspiece, StandardFormLocation currentSFLoc, StandardFormLocation proposedSFLocn) {
+    private Chesspiece getOccupant(StandardFormLocation location) {
+        for (Chesspiece piece : chesspieces) {
+            if (piece.getStandardFormLocation().equals(location)) {
+                return piece;
+            }
+        }
+
+        return null;
+    }
+
+    public boolean isMoveValid(Chesspiece chesspiece, StandardFormLocation currentSFLoc, StandardFormLocation proposedSFLoc) {
         //if space occupied by piece of same Side, then return false
         for (Chesspiece other : chesspieces) {
-            if (other.getStandardFormLocation().equals(proposedSFLocn)) {
+            if (other.getStandardFormLocation().equals(proposedSFLoc)) {
                 //if colors match, not allowed
                 if (chesspiece.getSide().equals(other.getSide())) {
-//                    System.out.println("Occupied by same colour!");
+                    System.out.println("Occupied by same colour!");
                     return false;
                 }
             }
         }
 
-        int xDiff = currentSFLoc.getGridLocation().x - proposedSFLocn.getGridLocation().x;
-        int yDiff = currentSFLoc.getGridLocation().y - proposedSFLocn.getGridLocation().y;
+        int xDiff = currentSFLoc.getGridLocation().x - proposedSFLoc.getGridLocation().x;
+        int yDiff = currentSFLoc.getGridLocation().y - proposedSFLoc.getGridLocation().y;
+        Chesspiece enemy = getOccupant(proposedSFLoc);
 
         switch (chesspiece.getType()) {
             case PAWN: //stuff
-//                if (chesspiece.getColor() == ) {
-//                    
-//                }
-                break;
+                //if pawn is white
+                //   and row is 2 the can move +1 or +2
+
+                if (chesspiece.getSide().equals(Side.WHITE)) {
+                    if (currentSFLoc.getRow() == 2) {
+                        return ((yDiff == 1) || (yDiff == 2));
+                    } else if ((yDiff == 1) && (Math.abs(xDiff) == 1)) {
+                        if ((enemy != null) && (enemy.getSide() == Side.BLACK)) {
+//                            remove enemy
+                            enemy.setCaptured(true);
+                            return true;
+                        }
+
+                    } else {
+                        return (yDiff == 1);
+
+                        //if there is a piece in front of the piece diagonally, validate move and remove that piece
+                        //if |xdifference between two pieces| = 1, ydifference between two pieces = 1
+                    }
+                } else {
+                    // black guys
+                    //if pawn is black
+                    // and row is 7 the can move -1 or -2
+
+                    if (chesspiece.getSide().equals(Side.BLACK)) {
+                        if (currentSFLoc.getRow() == 7) {
+                            return ((yDiff == -1) || (yDiff == -2));
+                        } else if ((yDiff == -1) && (Math.abs(xDiff) == 1)) {
+                            if ((enemy != null) && (enemy.getSide() == Side.WHITE)) {
+                                enemy.setCaptured(true);
+                                return true;
+                            } else {
+                                return (yDiff == -1);
+                            }
+                        }
+                    }
+                }
 
             case ROOK:
                 //if the path between the proposed location and the original 
                 //location is a straight horizontal or vertical line, then validate move
-                return ((xDiff == 0) || (yDiff == 0));
+                if (chesspiece.getSide().equals(Side.WHITE)) {
+                    if ((xDiff == 0) || (yDiff == 0)) {
+                        if ((enemy != null) && (enemy.getSide() == Side.BLACK)) {
+//                            remove enemy
+                            enemy.setCaptured(true);
+                            return true;
+                        }
+                    }
+                } else {
+                    if (chesspiece.getSide().equals(Side.BLACK)) {
+                        if ((xDiff == 0) || (yDiff == 0)) {
+                            if ((enemy != null) && (enemy.getSide() == Side.WHITE)) {
+//                            remove enemy
+                                enemy.setCaptured(true);
+                                return true;
+                            }
+                        }
+                    } 
+                }
+            return ((xDiff == 0) || (yDiff == 0));
 
             case KNIGHT:
                 //if it moves two squares vertically and one square horizontally, or, two squares horizontally and one sqaure vertically, validate move
-                return (((Math.abs(xDiff) == 1) && (Math.abs(yDiff) == 2)) || 
-                        ((Math.abs(xDiff) == 2) && (Math.abs(yDiff) == 1)));
+                if (chesspiece.getSide().equals(Side.WHITE)) {
+                    if (((Math.abs(xDiff) == 1) && (Math.abs(yDiff) == 2))
+                        || ((Math.abs(xDiff) == 2) && (Math.abs(yDiff) == 1))) {
+                        if ((enemy != null) && (enemy.getSide() == Side.BLACK)) {
+//                            remove enemy
+                            enemy.setCaptured(true);
+                            return true;
+                        }
+                    }
+                } else {
+                    if (chesspiece.getSide().equals(Side.BLACK)) {
+                        if (((Math.abs(xDiff) == 1) && (Math.abs(yDiff) == 2))
+                        || ((Math.abs(xDiff) == 2) && (Math.abs(yDiff) == 1))) {
+                            if ((enemy != null) && (enemy.getSide() == Side.WHITE)) {
+//                            remove enemy
+                                enemy.setCaptured(true);
+                                return true;
+                            }
+                        }
+                    } 
+                }
+                return (((Math.abs(xDiff) == 1) && (Math.abs(yDiff) == 2))
+                        || ((Math.abs(xDiff) == 2) && (Math.abs(yDiff) == 1)));
 
             case BISHOP: //stuff
                 //if the path between the proposed location and the original 
                 //location is a straight diagonal(45 degrees) line, then validate move
+                if (chesspiece.getSide().equals(Side.WHITE)) {
+                    if (Math.abs(xDiff) == Math.abs(yDiff)) {
+                        if ((enemy != null) && (enemy.getSide() == Side.BLACK)) {
+//                            remove enemy
+                            enemy.setCaptured(true);
+                            return true;
+                        }
+                    }
+                } else {
+                    if (chesspiece.getSide().equals(Side.BLACK)) {
+                        if (Math.abs(xDiff) == Math.abs(yDiff)) {
+                            if ((enemy != null) && (enemy.getSide() == Side.WHITE)) {
+//                            remove enemy
+                                enemy.setCaptured(true);
+                                return true;
+                            }
+                        }
+                    } 
+                }
                 return (Math.abs(xDiff) == Math.abs(yDiff));
 
             case KING: //stuff
                 //If the proposed position is directly left, right, above, below, 
                 //or diagonal to the original location, then move the piece
+                if (chesspiece.getSide().equals(Side.WHITE)) {
+                    if ((Math.abs(xDiff) <= 1) && (Math.abs(yDiff) <= 1)) {
+                        if ((enemy != null) && (enemy.getSide() == Side.BLACK)) {
+//                            remove enemy
+                            enemy.setCaptured(true);
+                            return true;
+                        }
+                    }
+                } else {
+                    if (chesspiece.getSide().equals(Side.BLACK)) {
+                        if ((Math.abs(xDiff) <= 1) && (Math.abs(yDiff) <= 1)) {
+                            if ((enemy != null) && (enemy.getSide() == Side.WHITE)) {
+//                            remove enemy
+                                enemy.setCaptured(true);
+                                return true;
+                            }
+                        }
+                    } 
+                }
                 return ((Math.abs(xDiff) <= 1) && (Math.abs(yDiff) <= 1));
 
             case QUEEN: //stuff
-                return (Math.abs(xDiff) == Math.abs(yDiff)) ||((xDiff == 0) || (yDiff == 0)); 
+                if (chesspiece.getSide().equals(Side.WHITE)) {
+                    if ((Math.abs(xDiff) == Math.abs(yDiff)) || (xDiff == 0) || (yDiff == 0)) {
+                        if ((enemy != null) && (enemy.getSide() == Side.BLACK)) {
+//                            remove enemy
+                            enemy.setCaptured(true);
+                            return true;
+                        }
+                    }
+                } else {
+                    if (chesspiece.getSide().equals(Side.BLACK)) {
+                        if ((Math.abs(xDiff) == Math.abs(yDiff)) || (xDiff == 0) || (yDiff == 0)) {
+                            if ((enemy != null) && (enemy.getSide() == Side.WHITE)) {
+//                            remove enemy
+                                enemy.setCaptured(true);
+                                return true;
+                            }
+                        }
+                    } 
+                }
+                return ((Math.abs(xDiff) == Math.abs(yDiff)) || (xDiff == 0) || (yDiff == 0));
         }
-
         return true;
     }
 
     @Override
-    public void paintEnvironment(Graphics graphics) {
+    public void paintEnvironment(Graphics graphics
+    ) {
 //       board
         if (board != null) {
             board.paintComponent(graphics);
