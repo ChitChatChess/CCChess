@@ -13,7 +13,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.Point;
 import grid.Grid;
-import image.ResourceTools;
+import images.ResourceTools;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
