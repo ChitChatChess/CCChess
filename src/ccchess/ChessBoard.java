@@ -202,36 +202,30 @@ class ChessBoard extends Environment {
 
                 if (chesspiece.getSide().equals(Side.WHITE)) {
                     if (currentSFLoc.getRow() == 2) {
-                        return ((yDiff == 1) || (yDiff == 2));
+                        return (((yDiff == 1) || (yDiff == 2)) && (xDiff == 0));
                     } else if ((yDiff == 1) && (Math.abs(xDiff) == 1)) {
                         if ((enemy != null) && (enemy.getSide() == Side.BLACK)) {
 //                            remove enemy
                             enemy.setCaptured(true);
                             return true;
                         }
-
                     } else {
-                        return (yDiff == 1);
+                        return ((yDiff == 1) && (xDiff == 0));
 
                         //if there is a piece in front of the piece diagonally, validate move and remove that piece
                         //if |xdifference between two pieces| = 1, ydifference between two pieces = 1
                     }
-                } else {
-                    // black guys
-                    //if pawn is black
-                    // and row is 7 the can move -1 or -2
-
-                    if (chesspiece.getSide().equals(Side.BLACK)) {
-                        if (currentSFLoc.getRow() == 7) {
-                            return ((yDiff == -1) || (yDiff == -2));
-                        } else if ((yDiff == -1) && (Math.abs(xDiff) == 1)) {
-                            if ((enemy != null) && (enemy.getSide() == Side.WHITE)) {
-                                enemy.setCaptured(true);
-                                return true;
-                            } else {
-                                return (yDiff == -1);
-                            }
+                } else if (chesspiece.getSide().equals(Side.BLACK)) {
+                    if (currentSFLoc.getRow() == 7) {
+                        return (((yDiff == -1) || (yDiff == -2)) && (xDiff == 0));
+                    } else if ((yDiff == -1) && (Math.abs(xDiff) == 1)) {
+                        if ((enemy != null) && (enemy.getSide() == Side.WHITE)) {
+//                            remove enemy
+                            enemy.setCaptured(true);
+                            return true;
                         }
+                    } else {
+                        return ((yDiff == -1) && (xDiff == 0));
                     }
                 }
 
@@ -255,15 +249,15 @@ class ChessBoard extends Environment {
                                 return true;
                             }
                         }
-                    } 
+                    }
                 }
-            return ((xDiff == 0) || (yDiff == 0));
+                return ((xDiff == 0) || (yDiff == 0));
 
             case KNIGHT:
                 //if it moves two squares vertically and one square horizontally, or, two squares horizontally and one sqaure vertically, validate move
                 if (chesspiece.getSide().equals(Side.WHITE)) {
                     if (((Math.abs(xDiff) == 1) && (Math.abs(yDiff) == 2))
-                        || ((Math.abs(xDiff) == 2) && (Math.abs(yDiff) == 1))) {
+                            || ((Math.abs(xDiff) == 2) && (Math.abs(yDiff) == 1))) {
                         if ((enemy != null) && (enemy.getSide() == Side.BLACK)) {
 //                            remove enemy
                             enemy.setCaptured(true);
@@ -273,14 +267,14 @@ class ChessBoard extends Environment {
                 } else {
                     if (chesspiece.getSide().equals(Side.BLACK)) {
                         if (((Math.abs(xDiff) == 1) && (Math.abs(yDiff) == 2))
-                        || ((Math.abs(xDiff) == 2) && (Math.abs(yDiff) == 1))) {
+                                || ((Math.abs(xDiff) == 2) && (Math.abs(yDiff) == 1))) {
                             if ((enemy != null) && (enemy.getSide() == Side.WHITE)) {
 //                            remove enemy
                                 enemy.setCaptured(true);
                                 return true;
                             }
                         }
-                    } 
+                    }
                 }
                 return (((Math.abs(xDiff) == 1) && (Math.abs(yDiff) == 2))
                         || ((Math.abs(xDiff) == 2) && (Math.abs(yDiff) == 1)));
@@ -305,7 +299,7 @@ class ChessBoard extends Environment {
                                 return true;
                             }
                         }
-                    } 
+                    }
                 }
                 return (Math.abs(xDiff) == Math.abs(yDiff));
 
@@ -329,7 +323,7 @@ class ChessBoard extends Environment {
                                 return true;
                             }
                         }
-                    } 
+                    }
                 }
                 return ((Math.abs(xDiff) <= 1) && (Math.abs(yDiff) <= 1));
 
@@ -351,7 +345,7 @@ class ChessBoard extends Environment {
                                 return true;
                             }
                         }
-                    } 
+                    }
                 }
                 return ((Math.abs(xDiff) == Math.abs(yDiff)) || (xDiff == 0) || (yDiff == 0));
         }
